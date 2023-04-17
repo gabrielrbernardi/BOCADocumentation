@@ -1,5 +1,5 @@
 # Introduction
-This repository contains the documentation for installing and configuring a system with BOCA Online Contest Administrator, database replication for PostgreSQL, and Animeitor Configuration.
+This repository contains the documentation for installing and configuring a system with [BOCA Online Contest Administrator](https://github.com/cassiopc/boca), database replication for PostgreSQL, and Animeitor Configuration.
 
 # Requirements
 The operating system that has been tested in Ubuntu 20.04. Currently, Ubuntu 22.04 is supported too.
