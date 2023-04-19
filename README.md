@@ -30,12 +30,15 @@ systemctl start apache2
 ```
 
 ## Database configuration
-If you want, you can install BOCA on other machines and use them as autojudges. For this, you need to configure a PostgreSQL file, that is located at `/etc/postgresql/12/main/postgresql.conf`. Search on this file for `listen_addresses`. On this line, you must set this listen address to allow connection from all locations. The final result should be this: `listen_addresses = '*'`. Save this file and close.
+If you want, you can install BOCA on other machines and use them as autojudges. For this, you need to configure a PostgreSQL file, that is located at `/etc/postgresql/12/main/postgresql.conf`. Search on this file for `listen_addresses`. On this line, you must set this `listen_addresses` to allow connection from all locations. The final result should be this: `listen_addresses = '*'`. Save this file and close.
 
 ## Allowing multi-login for the BOCA users
-On BOCA, there has a bug that denies access from multiple IP addresses, for the users. To fix this bug, you need to replace the `flog.php` file located at `/var/www/boca/src/`. Overwrite this file by the file placed on this repository, named `flog.php`.
+On BOCA, there has a bug that denies access from multiple IP addresses, for the users. To fix this bug, you need to replace the `flog.php` file located at `/var/www/boca/src/`. Overwrite this file by the file placed on this repository, named [`flog.php`](./flog.php).
 
 ## Installing Auto Judges
+There are two possibilities to run an auto-judge system. One of them is the [local installation](#local-auto-judges), on the same machine that runs BOCA's database. Another one is to [install an auto-judge system on another machine](#external-auto-judges).
+
+### Local Auto Judges
 For automatically judging exercises, you'll need to install the autojudge. This tool is a robot that will connect to the database and waits for newer runs, that have been sent by the competitors.
 To install this, you'll need to run the following commands:
 ```
@@ -44,6 +47,55 @@ apt-cache show maratona-linguagens
 apt-get install maratona-linguagens
 ```
 After this, you can run autojudge by typing `sudo boca-autojudge`. If you prefer, this tool can be run in the background. To make this, nohup can be used. To use this, you can run `sudo nohup boca-autojudge &` on the terminal and hit the enter key.
+
+### External Auto Judges
+With this type of setup, you could run a self-judging system using another machine, which could be dedicated to judging contest exercises.
+
+To run it, you will install BOCA on this machine ([Follow previous steps](#boca-installation)). After the installation is completed, you will have to configure a single file, which points the self-trial connection to the main machine. The machine
+running the dedicated self-trial need not be the second machine in the replication steps.
+
+Firstly, you will need to run the following commands as a superuser.
+
+1. Locate the `conf.php` file. By default, it can be found at `/var/www/boca/src/private`.
+      ```
+      sudo su
+      cd /var/www/boca/src/private
+      ```
+2. Open the file using your preferred text editor.
+      ```
+      nano conf.php
+      ```
+3. Locate the line containing `$conf["dbhost"]=`. Replace the contents of this line (under `localhost`) with the IP address of the machine running the BOCA database. Insert this IP address under double quotes 
+      ```
+      $conf["dbhost"]="BOCADatabaseIPAddress";
+      ```
+4. Verify that the port the database is on, on the main machine, is the default (port 5432). Otherwise, overwrite this information in the file with the current port.
+
+5. Insert the credentials that will be used to connect to this database. Locate the line that contains `$conf["dbpass"]=` and insert the password of the primary database, to connect to him. Insert this password under double quotes.
+    ```
+    $conf["dbpass"]="SecretPassword";
+    ```
+6. Insert the credentials that will be used to connect to this database, with privileged permissions. Locate the line that contains `$conf["dbsuperpass"]=` and insert the password of the primary database, to connect to him. Insert this password under double quotes.
+    ```
+    $conf["dbsuperpass"]="SecretPassword";
+    ```
+
+7. By default, BOCA creates a user named `bocauser` and the password for him is the password that you set on the BOCA installation process. If you don't want to use this user, change this on `conf.php` (Locate the line that contains `$conf["dbhost"]="bocauser"` and the line that contains `$conf["dbsuperuser"]="bocauser"` and change this user to the user that you define).
+
+8. After these previous steps, the file should have the pieces of information that you've inserted, and look like this:
+    ```
+    $conf["dbhost"]="BOCADatabaseIPAddress";
+    $conf["dbport"]="5432";
+
+    $conf["dbname"]="bocadb"; // name of the boca database
+
+    $conf["dbuser"]="bocauser"; // unprivileged boca user
+    $conf["dbpass"]="SecretPassword";
+
+    $conf["dbsuperuser"]="bocauser"; // privileged boca user
+    $conf["dbsuperpass"]="SecretPassword";
+    ```
+9. Save this file. After this, the connection of auto-judge will be on the main BOCA database.
 
 ### Killing autojudge
 To kill autojudge that is running in the background, you can get the PID value and terminate this process.
