@@ -240,3 +240,72 @@ To execute this, you should connect to the secondary machine and follow these st
     ```
     SELECT current_setting('transaction_read_only');
     ```
+# Animeitor
+The ["Animeitor"](https://github.com/wuerges/maratona-animeitor-rust/) is a tool, developed in Rust, that shows a customized scoreboard, that can be followed during the competition. With this tool, you can have another one called "Reveleitor". The "Reveleitor" tool shows the scoreboard between the freeze time and the end of the contest. Here, we have two parts. The first one, you'll configure the server that runs BOCA web. The second one you'll configure the machine that will run "Animeitor".
+
+## Configuring the BOCA web server
+The "Animeitor" will access BOCA through the BOCA web. To allow this, you'll have to configure a file, that allows this connection between the machine that runs animeitor and the one that runs BOCA web, without needing to authenticate as an administrator.
+
+1. You have to create a file called `webcast.sep`, inside `/var/www/boca/src/private` directory. On this file, you must set the webcast code which is like a "credential" to access the webcast file, and the range of users that belongs to this webcast code. Here is a sample:
+    ```
+    allUsers 1/1000/9000
+    ```
+    `allUsers` is the webcast code; 1 is the site that belongs to the current activated contest; 1000 is the first user ID; 9000 is the last user ID.
+
+2. After this, you can test if the configuration is working well. To this, access BOCA web and make a request to the webcast file. This file is a compacted one.
+    ```
+    wget https://IPBOCAWeb/admin/report/webcast.php?webcastcode=allUsers -O t.zip
+    ```
+    Inside this downloaded file, you should have 5 other files: `contest`, `icpc`, `runs`, `time`, and `version`. If these files are in, the configuration is ok.
+
+3. If you have more than one competition in BOCA's database, you must set up another file that points this webcast to the desired competition.
+    1. For that, you must open the `webcast.php` file, which is in `/var/www/boca/src/admin/report/`.
+        ```
+        nano /var/www/boca/src/admin/report/webcast.php
+        ```
+    2. Locate the line containing `$contest`. The result should look something like this: `$contest = 42; //$_SESSION["usertable"]["contestnumber"];`
+    
+    3. Change this contest value to the current contest, which can be located after logging in to BOCA web as admin, on the "Contest" tab, with the label "Contest number:".
+
+    4. Save this file.
+
+4. After you load the `insert-user` file, you have to check if inside the `/var/www/boca/src/private` directory, does not contains a file named `webcast.allUsers.zip` and/or a folder named `webcast.allUsers`. If exists, remove them.
+    ```
+    rm webcast.allUsers.zip
+    rm webcast.allUsers/ -r
+    ```
+
+## Installing Animeitor
+The "Animeitor" is stored at a public [GitHub repository](https://github.com/wuerges/maratona-animeitor-rust/). To install him, you have to install Rust and Cargo (package manager), on the terminal.
+
+1. First of all, install rust:
+    ```
+    curl https://sh.rustup.rs -sSf | sh
+    ```
+2. Secondly, you have to install some dependencies that can be used on "Animeitor"
+    ```
+    sudo apt-get install build-essential libssl-dev pkg-config
+    ```
+3. In this step, you have to clone the repository. In our tests, the current version of the repository does not work correctly. With that, you must change the repository version to a version older than the current one.
+    1. Clone the repository
+        ```
+        git clone https://github.com/wuerges/maratona-animeitor-rust
+        ```
+    2. Changing to an older version
+        ```
+        git checkout ca7ed53
+        ```
+    3. Change to the cloned directory
+        ```
+        cd maratona-animeitor-rust
+        ```
+4. Here, you have to install a package manager called `Cargo` and a tool, called `wasm-pack`. To this, run:
+    ```
+    sudo apt install cargo -y
+    cargo install wasm-pack
+    ```
+5. Finally, you can run "Animeitor" on the terminal and access the tool on a Browser, following the links that the tool provides.
+    ```
+    cargo run --release --bin simples -- http://IPBOCAWeb/admin/report/webcast.php?webcastcode=allUsers
+    ```
+6. In some cases, on the browser, an error occurs that tells that `package.js` was not located. If this occurs, copy the [`/client/pkg`] folder (./client/pkg) and put it in the root folder.
