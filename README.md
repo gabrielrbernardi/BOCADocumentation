@@ -1,14 +1,29 @@
 # Introduction
 This repository contains the documentation for installing and configuring a system with [BOCA Online Contest Administrator](https://github.com/cassiopc/boca), database replication for PostgreSQL, and Animeitor Configuration.
-
-# Requirements
-The operating system that has been tested in Ubuntu 20.04. Currently, Ubuntu 22.04 is supported too.
-
 # What was used?
-At least two Machines/VMs running Ubuntu. One is for the main BOCA and the second one works for the replication of the PostgreSQL database.
+At least two Machines/VMs running Ubuntu. One is for the main BOCA and the second one works for the replication of the PostgreSQL database. 
 
-# BOCA Installation
-The BOCA package must be installed on both machines. The installation process has four commands that must be executed on the bash terminal.
+The operating system that has been tested was Ubuntu 20.04. Currently, Ubuntu 22.04 is supported too.
+
+In our tests, we had three environments. The first one was locally virtualized, with two machines. The second one was on Microsoft Azure, using two machines too. Finally, the last one was used for "Animeitor" and had one server that was located on Microsoft Azure.
+
+After the competition, we verified that the resources of the machines in the local environment were oversized. The number of vCPUs and RAM memory needed to run the systems may be less than what was used.
+### Local environment for BOCA
+| Machine Name | Operating System | vCPUs | RAM Memory | Storage | 
+|---|---|---|---|---|
+| Primary | Ubuntu Server 20.04.4 LTS | 8 | 9.5 GB | 191 GB |
+| Secondary | Ubuntu Server 20.04.4 LTS | 8 | 9.5 GB | 191 GB |
+### Cloud environment for BOCA
+| Machine Name | Operating System | vCPUs | RAM Memory | Storage | Region |
+|---|---|---|---|---|---|
+| PrimaryBOCA | Ubuntu Server 20.04.6 LTS | 2 | 7.8 GB | 29 GB | East US |
+| SecondaryBOCA | Ubuntu Server 20.04.6 LTS | 2 | 7.8 GB | 29 GB | West US 3 |
+### Cloud environment for Animeitor
+| Machine Name | Operating System | vCPUs | RAM Memory | Storage | Region |
+|---|---|---|---|---|---|
+| AnimeitorMachine | Ubuntu Server 20.04.6 LTS | 2 | 7.8 GB | 29 GB | East US| 
+# BOCA
+The [BOCA](https://launchpad.net/~icpc-latam/+archive/ubuntu/maratona-linux) package should be installed on both machines. 
 
 ```
 sudo apt-get update # Updating packages
