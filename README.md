@@ -308,4 +308,4 @@ The "Animeitor" is stored at a public [GitHub repository](https://github.com/wue
     ```
     cargo run --release --bin simples -- http://IPBOCAWeb/admin/report/webcast.php?webcastcode=allUsers
     ```
-6. In some cases, on the browser, an error occurs that tells that `package.js` was not located. If this occurs, copy the [`/client/pkg`] folder (./client/pkg) and put it in the root folder.
+6. In some cases, on the browser, an error occurs that tells that `package.js` was not located. If this occurs, copy the [`/client/pkg`](./client/pkg) directory and put it in the root folder, with the same folder structure.

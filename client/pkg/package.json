@@ -1,0 +1,20 @@
+{
+  "name": "client",
+  "collaborators": [
+    "Emilio Wuerges <wuerges@gmail.com>"
+  ],
+  "description": "App Description",
+  "version": "0.1.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seed-rs/seed-quickstart"
+  },
+  "files": [
+    "package_bg.wasm",
+    "package.js",
+    "package.d.ts"
+  ],
+  "module": "package.js",
+  "types": "package.d.ts",
+  "sideEffects": false
+}
