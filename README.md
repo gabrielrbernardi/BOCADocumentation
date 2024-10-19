@@ -144,8 +144,14 @@ The "Animeitor" is stored at a public [GitHub repository](https://github.com/wue
         "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
         $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
         sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    
+
     sudo apt-get update
+
+    sudo apt install docker-ce
+    sudo systemctl status docker
+
+    sudo apt-get update
+    
     ```
 2. In this step, you have to clone the repository.
     1. Clone the repository
